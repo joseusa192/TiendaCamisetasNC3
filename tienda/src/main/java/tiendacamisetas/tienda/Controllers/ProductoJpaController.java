@@ -8,12 +8,20 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tiendacamisetas.tienda.Controllers.exceptions.NonexistentEntityException;
 import tiendacamisetas.tienda.Models.Producto;
 
+@CrossOrigin(origins="/*")
 @RestController
 @RequestMapping("/")
 public class ProductoJpaController implements Serializable {
@@ -26,28 +34,31 @@ public class ProductoJpaController implements Serializable {
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
-
-    public void create(Producto producto) {
+    @PostMapping()
+    public String create(@RequestBody Producto producto) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             em.persist(producto);
             em.getTransaction().commit();
+            return "Producto creado ";
         } finally {
             if (em != null) {
                 em.close();
             }
         }
     }
-
-    public void edit(Producto producto) throws NonexistentEntityException, Exception {
+    
+    @PutMapping()
+    public String edit(@RequestBody Producto producto) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             producto = em.merge(producto);
             em.getTransaction().commit();
+            return "Producto actualizado";
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
@@ -63,8 +74,9 @@ public class ProductoJpaController implements Serializable {
             }
         }
     }
-
-    public void destroy(Integer id) throws NonexistentEntityException {
+    
+    @DeleteMapping("/{id}")
+    public String destroy(@PathVariable() Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -78,6 +90,7 @@ public class ProductoJpaController implements Serializable {
             }
             em.remove(producto);
             em.getTransaction().commit();
+            return "ok";
         } finally {
             if (em != null) {
                 em.close();
@@ -85,6 +98,7 @@ public class ProductoJpaController implements Serializable {
         }
     }
     
+    @CrossOrigin(origins="*")
     @GetMapping()
     public List<Producto> findProductoEntities() {
         return findProductoEntities(true, -1, -1);

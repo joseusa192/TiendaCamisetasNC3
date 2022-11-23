@@ -8,12 +8,19 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tiendacamisetas.tienda.Controllers.exceptions.NonexistentEntityException;
 import tiendacamisetas.tienda.Models.Categoria;
 
+@CrossOrigin(origins="/*")
 @RestController
 @RequestMapping("/categoria")
 public class CategoriaJpaController implements Serializable {
@@ -26,14 +33,16 @@ public class CategoriaJpaController implements Serializable {
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
-
-    public void create(Categoria categoria) {
+    
+    @PostMapping()
+    public String create(@RequestBody Categoria categoria) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             em.persist(categoria);
             em.getTransaction().commit();
+            return "Categoria Creada";
         } finally {
             if (em != null) {
                 em.close();
@@ -41,13 +50,16 @@ public class CategoriaJpaController implements Serializable {
         }
     }
 
-    public void edit(Categoria categoria) throws NonexistentEntityException, Exception {
+    
+    @PutMapping()
+    public String edit(@RequestBody Categoria categoria) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             categoria = em.merge(categoria);
             em.getTransaction().commit();
+            return "Categoria actualizada";
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
@@ -63,8 +75,10 @@ public class CategoriaJpaController implements Serializable {
             }
         }
     }
-
-    public void destroy(Integer id) throws NonexistentEntityException {
+    
+    
+    @DeleteMapping("/{id}")
+    public String destroy(@PathVariable() Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -78,6 +92,7 @@ public class CategoriaJpaController implements Serializable {
             }
             em.remove(categoria);
             em.getTransaction().commit();
+            return "ok";
         } finally {
             if (em != null) {
                 em.close();
@@ -85,6 +100,7 @@ public class CategoriaJpaController implements Serializable {
         }
     }
     
+    @CrossOrigin(origins="*")
     @GetMapping()
     public List<Categoria> findCategoriaEntities() {
         return findCategoriaEntities(true, -1, -1);
