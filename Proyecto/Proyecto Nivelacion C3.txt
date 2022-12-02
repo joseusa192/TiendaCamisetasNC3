@@ -1,0 +1,36 @@
+Proyecto Nivelacion:
+
+Aplicacion TIENDA CAMISETAS
+
+Funciones:
+	- Crud Usuarios.
+	- Crud Productos.
+	- Carrito de compras.
+	- Comprar.
+	- Visualizar producto,nombre y precio.
+	- Login.
+	- Tablero Administracion.
+	
+
+	PRODUCTO:
+		- Categoria
+		- Nombre
+		- Descripcion
+		- Precio
+	
+	USUARIO:
+		- ...
+		- ...
+		- ...
+		- ...
+
+TECNOLOGIAS:
+	
+	- Java (Spring Boot) API-->Back-End    NetBeans
+	- MySQL -->Base de Datos
+	- Bosstrapt -->Front-End          Visual Studio Code
+	- JavaScript -->Front-End          Visual Studio Code
+
+
+Configurar Servidor ==>https://localhots.8080/==>Configurar Base de Datos==> 
+	
