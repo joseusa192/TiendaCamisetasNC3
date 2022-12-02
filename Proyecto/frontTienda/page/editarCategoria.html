@@ -1,0 +1,57 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<form name="frm">
+    <div class="form-group row">
+      <label for="nombre" class="col-4 col-form-label">Nombre</label> 
+      <div class="col-8">
+        <input id="nombre" name="nombre" placeholder="Nombre" type="text" class="form-control">
+      </div>
+    </div> 
+    <div class="form-group row">
+      <div class="offset-4 col-8">
+        <input name="submit" type="submit" onclick="guardar()" class="btn btn-primary" value="Editar">
+      </div>
+    </div>
+  </form>
+<script>
+    let url=("http://localhost:9011/categoria/");
+    let params = new URLSearchParams(location.search);
+    const id = params.get("id");
+    
+    function guardar(){
+    let nombre = document.getElementById("nombre").value;
+    let params = new URLSearchParams(location.search);
+    const id = params.get("id");
+    console.log(id)
+    let categoria = {
+        "id":id,
+        "nombre":nombre
+    }
+    options={
+        method : "PUT",
+        body : JSON.stringify(categoria),
+        headers:{
+            "Content-Type":"application/json"
+        }
+    }
+    
+    fetch(url+"?id="+id,options)
+    .then(response => response.json())
+    .then(data =>{ 
+        if (data.msj=="ok"){
+            alert("Categoria Actualizado");
+            document.location = "editarCategoria.html?id="+id+""
+        }else{
+            alert("Error al Guardar");
+        }
+    })
+    document.location = "editarCategoria.html?id="+id+""
+}  
+
+    fetch(url+id)
+    .then(response => response.json())
+    .then(data => {
+        let id = data.id;
+        document.getElementById("nombre").value = data.nombre;
+        })
+
+</script>
